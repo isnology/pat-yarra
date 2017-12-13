@@ -177,12 +177,12 @@ class App extends Component {
               </Fragment>
             ))} />
 
-            <Route path='/products' exact render= { requireAuth(() => (
+            <Route path='/products' exact render= { () => (
               <Fragment>
-                { products && wishlist &&
+                { products &&
                     <ProductList
                     products={ products }
-                    productsInWishlist={ wishlist.products }
+                    productsInWishlist={ wishlist ? wishlist.products : null }
                     editedProductID={ editedProductID }
                     onEditProduct={ this.onBeginEditingProduct }
                     onAddProductToWishlist={ this.onAddProductToWishlist }
@@ -199,7 +199,7 @@ class App extends Component {
                   />
                 }
               </Fragment>
-            ))} />
+            )} />
 
             <Route path='/admin/products' exact render= { requireAuth(() => (
               <Fragment>
@@ -240,14 +240,18 @@ class App extends Component {
       this.setState({ error })
     }
 
-    const { decodedToken } = this.state
-    if (decodedToken) {
-      listProducts()
-      .then((products) => {
-        this.setState({ products })
-      })
-      .catch(saveError)
+    // load for everyone
+    listProducts()
+    .then((products) => {
+      this.setState({ products })
+    })
+    .catch(saveError)
 
+    const { decodedToken } = this.state
+    const signedIn = !!decodedToken
+
+    if (signedIn) {
+      // load only for signed in
       listWishlist()
       .then((wishlist) => {
         this.setState({ wishlist })
@@ -256,7 +260,6 @@ class App extends Component {
     }
     else {
       this.setState({
-        products: null,
         wishlist: null
       })
     }

@@ -2,15 +2,19 @@ import React, { Fragment } from 'react'
 import Product from './Product'
 import _ from 'lodash'
 
-//function findProductInWishlist( product, products ) {
-//  let value = false
-//  products.forEach((prod) => {
-//    if (prod._id === product._id ) {
-//      value = true
-//    }
-//  })
-//  return value
-//}
+
+function statusForWishlist(product, productsInWishlist) {
+  const hasWishlist = !!productsInWishlist
+
+  if (!hasWishlist) {
+    return { showAdd: false, showRemove: false }
+  }
+
+  const inWishlist = !!_.find(productsInWishlist, function(prod) {
+    return prod._id === product._id
+  })
+  return { showAdd: !inWishlist, showRemove: inWishlist }
+}
 
 function ProductList({
   products,
@@ -21,13 +25,13 @@ function ProductList({
   onRemoveProductFromWishlist,
   renderEditForm
 }) {
+
   return (
     <div className='mb-3'>
       <h2>Products</h2>
       {
         products.map((product) => {
-          //const inWishlist = findProductInWishlist( product, productsInWishlist )
-          const inWishlist = !!_.find(productsInWishlist, function(prod) { return prod._id === product._id })
+          const { showAdd, showRemove } = statusForWishlist(product, productsInWishlist)
           return (
           <Fragment key={ product._id }>
             <Product
@@ -35,10 +39,10 @@ function ProductList({
               onEdit={ () => {
                 onEditProduct(product._id)
               } }
-              onAddToWishlist={ inWishlist ? null : () => {
+              onAddToWishlist={ showAdd ? () => {
                 onAddProductToWishlist(product._id)
-              }}
-              onRemoveFromWishlist={ inWishlist ? () => {
+              } : null }
+              onRemoveFromWishlist={ showRemove ? () => {
                 onRemoveProductFromWishlist(product._id)
               } : null }
             />
