@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import Product from './Product'
-import _ from 'lodash'
+import _find from 'lodash/find'
 
 
 function statusForWishlist(product, productsInWishlist) {
@@ -10,7 +10,7 @@ function statusForWishlist(product, productsInWishlist) {
     return { showAdd: false, showRemove: false }
   }
 
-  const inWishlist = !!_.find(productsInWishlist, function(prod) {
+  const inWishlist = !!_find(productsInWishlist, function(prod) {
     return prod._id === product._id
   })
   return { showAdd: !inWishlist, showRemove: inWishlist }
