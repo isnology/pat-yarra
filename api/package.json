@@ -24,6 +24,9 @@
     "seed": "node models/seeds.js",
     "drop": "node models/drop.js",
     "reset": "npm run drop && npm run seed",
-    "start": "node server.js"
+    "start": "node server.js",
+    "deploy": "now -E production.env",
+    "now:ls": "now ls yarra-api",
+    "now:rm": "now rm yarra-api"
   }
 }
